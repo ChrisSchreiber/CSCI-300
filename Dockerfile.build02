@@ -1,0 +1,29 @@
+FROM alpine AS BAD_EXAMPLE
+# (1,2) our base image is not specific to our 
+RUN apk add --no-cache nodejs python3 g++ make
+
+WORKDIR /app
+
+COPY app /app
+
+# (3) We have not installed our application dependencies
+# Our application will only start if we have run npm 
+# install outside of our docker build 
+
+ENTRYPOINT ["node", "src/index.js"]
+
+FROM node:12.22.6-alpine AS GOOD_EXAMPLE
+# (1,2) We are using the node base image and using the 
+# version specific tag 12.22.6-alpine
+
+RUN apk add --no-cache python g++ make
+
+WORKDIR /app
+
+COPY app /app
+
+RUN yarn install --production
+# (3) we are installing our application dependicnes are 
+# part of the build process
+
+ENTRYPOINT ["node", "src/index.js"]

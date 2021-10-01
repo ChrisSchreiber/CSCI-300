@@ -1,0 +1,16 @@
+FROM node:12-alpine
+
+RUN apk add --no-cache python g++ make
+
+WORKDIR /app
+
+COPY app/package.json app/yarn.lock /app/
+# (1) only copy files needed to install dependencies
+
+RUN yarn install --production
+# (2) install depdencies in this layer
+
+COPY app/src /app/src
+# (1,3) copy only application files
+
+ENTRYPOINT ["node", "src/index.js"]

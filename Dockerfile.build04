@@ -1,0 +1,8 @@
+FROM alpine as GROOVY
+
+RUN wget https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/apache-groovy-binary-3.0.9.zip && \
+    unzip  apache-groovy-binary-3.0.9.zip
+
+FROM node:12-alpine as NODE
+
+COPY --from=GROOVY groovy-3.0.9/bin/* .
